@@ -229,7 +229,7 @@ stateDiagram-v2
     state RegisterTools {
         [*] --> CheckRunning: registerTool(tool)
         CheckRunning --> Running: Server running?
-        Running --> [*]: Error: Cannot register
+        Running --> [*]: Error - Cannot register
         CheckRunning --> AddToMap: Server not running
         AddToMap --> LogRegistration: tools.set(name, tool)
         LogRegistration --> [*]: Tool registered
@@ -339,14 +339,14 @@ sequenceDiagram
         loop For each tool
             Handler->>Handler: Extract name, description, inputSchema
         end
-        Handler-->>Server: Return {tools: Tool[]}
+        Handler-->>Server: Return tools array
         Server-->>Transport: Format response
         Transport-->>Client: Return tool list
     end
 
     rect rgb(220, 240, 200)
         Note over Client,Demos: CallTool Request Flow
-        Client->>Transport: CallToolRequest {name, arguments}
+        Client->>Transport: CallToolRequest with name and arguments
         Transport->>Server: Forward request
         Server->>Handler: Process CallToolRequest
         Handler->>ToolMap: Get tool by name
@@ -368,7 +368,7 @@ sequenceDiagram
         end
         Demos-->>Tool: Return data
         Tool-->>Handler: Return result
-        Handler->>Handler: Format result as {content: [{type: "text", text: JSON}]}
+        Handler->>Handler: Format result as content array
         Handler-->>Server: Return formatted result
         Server-->>Transport: Format response
         Transport-->>Client: Return result
@@ -609,7 +609,7 @@ flowchart TD
     ThrowError --> ReturnError3([Return error response])
 
     FormatResult --> LogSuccess[Log: Tool executed successfully]
-    LogSuccess --> WrapContent[Wrap in {content: [{type: "text", text: JSON}]}]
+    LogSuccess --> WrapContent[Wrap in content array with type text]
     WrapContent --> ReturnSuccess([Return success response])
 
     style Start fill:#e1f5ff
@@ -697,16 +697,16 @@ sequenceDiagram
 
     rect rgb(200, 240, 240)
         Note over Client,Logger: Success Case
-        Client->>Server: CallToolRequest {name: "get_chain_height"}
+        Client->>Server: CallToolRequest get_chain_height
         Server->>Handler: Process request
         Handler->>Handler: Get tool and validate
         Handler->>Tool: Execute handler
         Tool->>Tool: Chain.getLastBlock()
-        Tool-->>Handler: {height: 12345, lastBlockHash: "0x..."}
+        Tool-->>Handler: Return height and lastBlockHash
         Handler->>Logger: Log: Tool executed successfully
         Handler->>Handler: Format result
         Handler-->>Server: Success response
-        Server-->>Client: {content: [{type: "text", text: JSON}]}
+        Server-->>Client: Success with content array
     end
 ```
 
@@ -785,7 +785,7 @@ stateDiagram-v2
         RequestType --> HandleCall: CallToolRequest
 
         HandleList --> BuildToolList: Iterate tools Map
-        BuildToolList --> ReturnTools: Return {tools: Tool[]}
+        BuildToolList --> ReturnTools: Return tools array
         ReturnTools --> WaitForClient
 
         HandleCall --> LookupTool: tools.get(name)
@@ -805,7 +805,7 @@ stateDiagram-v2
         QueryChain --> ReturnData
         QueryPeers --> ReturnData
 
-        ReturnData --> FormatResult: Format as {content: [...]}
+        ReturnData --> FormatResult: Format as content array
         FormatResult --> LogSuccess: Log success
         LogSuccess --> WaitForClient
 

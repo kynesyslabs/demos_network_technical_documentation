@@ -193,7 +193,7 @@ flowchart TD
     COUNTRESULT[Count total valid signatures]
     COUNTRESULT --> CALCULATE[Calculate: signatures div shard size]
 
-    CALCULATE --> THRESHOLD{Ratio greater or equal<br/>0.67 (67%)?}
+    CALCULATE --> THRESHOLD{Ratio >= 0.67<br/>67 percent?}
 
     THRESHOLD -->|yes| BLOCKVALID[Block is valid]
     THRESHOLD -->|no| BLOCKINVALID[Block is invalid]
@@ -786,12 +786,12 @@ stateDiagram-v2
 
     note right of Finalized
         Finalization Steps:
-        1. Save GCR state
-        2. Save transactions
-        3. Remove from mempool
-        4. Save block to database
-        5. Update sharedState
-        6. Broadcast to network
+        - Save GCR state
+        - Save transactions
+        - Remove from mempool
+        - Save block to database
+        - Update sharedState
+        - Broadcast to network
     end note
 ```
 
